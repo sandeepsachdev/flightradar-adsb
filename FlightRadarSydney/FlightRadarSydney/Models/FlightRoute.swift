@@ -16,12 +16,24 @@ struct FlightRoute: Codable {
     let origin: Airport?
     let destination: Airport?
     let airline: Airline?
+    
+    // Schedule information (if available from API)
+    let scheduledDeparture: String?
+    let actualDeparture: String?
+    let estimatedArrival: String?
 
     enum CodingKeys: String, CodingKey {
         case callsign
         case callsignIcao = "callsign_icao"
         case callsignIata = "callsign_iata"
         case origin, destination, airline
+        case scheduledDeparture = "scheduled_departure"
+        case actualDeparture = "actual_departure"
+        case estimatedArrival = "estimated_arrival"
+    }
+    
+    var departureTime: String? {
+        actualDeparture ?? scheduledDeparture
     }
 }
 

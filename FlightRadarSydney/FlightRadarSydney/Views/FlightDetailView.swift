@@ -29,11 +29,8 @@ struct FlightDetailView: View {
 
     private var compactCard: some View {
         VStack(spacing: 16) {
-            // Callsign and Route
+            // Route and Airline
             VStack(spacing: 6) {
-                Text(aircraft.callsign)
-                    .font(.title.bold())
-                
                 if viewModel.isLoadingRoute {
                     HStack(spacing: 4) {
                         ProgressView()
@@ -47,14 +44,14 @@ struct FlightDetailView: View {
                     HStack(spacing: 8) {
                         if let origin = route.origin?.iataCode ?? route.origin?.icaoCode {
                             Text(origin)
-                                .font(.headline)
+                                .font(.title2.bold())
                         }
                         Image(systemName: "arrow.right")
-                            .font(.caption)
+                            .font(.body)
                             .foregroundStyle(.secondary)
                         if let dest = route.destination?.iataCode ?? route.destination?.icaoCode {
                             Text(dest)
-                                .font(.headline)
+                                .font(.title2.bold())
                         }
                     }
                     
@@ -63,6 +60,21 @@ struct FlightDetailView: View {
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
+                    
+                    // Departure time if available
+                    if let depTime = route.departureTime {
+                        HStack(spacing: 4) {
+                            Image(systemName: "clock")
+                                .font(.caption2)
+                            Text("Departed: \(depTime)")
+                                .font(.caption)
+                        }
+                        .foregroundStyle(.secondary)
+                    }
+                } else {
+                    Text("No route information")
+                        .font(.subheadline)
+                        .foregroundStyle(.tertiary)
                 }
             }
             .frame(maxWidth: .infinity)
