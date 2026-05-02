@@ -87,20 +87,31 @@ final class FlightViewModel: ObservableObject {
         isLoading = false
     }
 
+    private var routeFetchTask: Task<Void, Never>?
+    
     func selectAircraft(_ ac: Aircraft?) {
+        // Cancel any pending route fetch
+        routeFetchTask?.cancel()
+        
         selectedAircraft = ac
         selectedRoute = nil
+        
         guard let ac else { return }
-        Task { await fetchRoute(for: ac) }
+        
+        // Fetch route asynchronously without blocking UI
+        routeFetchTask = Task { @MainActor in
+            await fetchRoute(for: ac)
+        }
     }
 
     private func fetchRoute(for ac: Aircraft) async {
         isLoadingRoute = true
+        defer { isLoadingRoute = false }
+        
         do {
             selectedRoute = try await RouteService.shared.fetchRoute(callsign: ac.callsign)
         } catch {
             // Route info is best-effort; ignore errors
         }
-        isLoadingRoute = false
     }
 }

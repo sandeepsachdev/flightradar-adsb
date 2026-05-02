@@ -96,7 +96,7 @@ struct FlightMapView: UIViewRepresentable {
 
         func mapView(_ map: MKMapView, didSelect annotation: MKAnnotation) {
             guard let ac = annotation as? AircraftAnnotation else { return }
-            Task { @MainActor in viewModel.selectAircraft(ac.aircraft) }
+            viewModel.selectAircraft(ac.aircraft)
         }
 
         func mapView(_ map: MKMapView, didDeselect annotation: MKAnnotation) {
