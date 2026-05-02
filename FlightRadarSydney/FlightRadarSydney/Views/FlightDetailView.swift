@@ -40,19 +40,35 @@ struct FlightDetailView: View {
                             .foregroundStyle(.secondary)
                     }
                 } else if let route = viewModel.selectedRoute {
-                    // Route info
-                    HStack(spacing: 8) {
-                        if let origin = route.origin?.iataCode ?? route.origin?.icaoCode {
-                            Text(origin)
-                                .font(.title2.bold())
+                    // Route info — city names primary, codes secondary
+                    HStack(spacing: 12) {
+                        VStack(alignment: .trailing, spacing: 2) {
+                            Text(route.origin?.municipality ?? route.origin?.name ?? "—")
+                                .font(.title3.bold())
+                                .multilineTextAlignment(.trailing)
+                            if let code = route.origin?.iataCode ?? route.origin?.icaoCode {
+                                Text(code)
+                                    .font(.caption.monospaced())
+                                    .foregroundStyle(.secondary)
+                            }
                         }
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+
                         Image(systemName: "arrow.right")
                             .font(.body)
                             .foregroundStyle(.secondary)
-                        if let dest = route.destination?.iataCode ?? route.destination?.icaoCode {
-                            Text(dest)
-                                .font(.title2.bold())
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(route.destination?.municipality ?? route.destination?.name ?? "—")
+                                .font(.title3.bold())
+                                .multilineTextAlignment(.leading)
+                            if let code = route.destination?.iataCode ?? route.destination?.icaoCode {
+                                Text(code)
+                                    .font(.caption.monospaced())
+                                    .foregroundStyle(.secondary)
+                            }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     
                     if let airline = route.airline?.name {
