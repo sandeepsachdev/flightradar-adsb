@@ -64,7 +64,7 @@ struct FlightListView: View {
 
     private var statsBar: some View {
         HStack(spacing: 20) {
-            Label("\(viewModel.airborneCount) airborne", systemImage: "airplane")
+            Label("\(viewModel.airborneCount) airborne", systemImage: "airplane.departure")
             Label("\(viewModel.groundCount) on ground", systemImage: "airplane.arrival")
             Spacer()
             if let ts = viewModel.lastUpdated {
@@ -106,6 +106,50 @@ struct FlightListView: View {
     }
 }
 
+// MARK: - Plane Icon View
+
+struct PlaneIconView: View {
+    let isOnGround: Bool
+    let heading: Double
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(isOnGround ? Color.secondary.opacity(0.15) : Color.blue.opacity(0.12))
+            
+            Canvas { context, size in
+                let center = CGPoint(x: size.width / 2, y: size.height / 2)
+                
+                // Rotate based on heading
+                context.translateBy(x: center.x, y: center.y)
+                context.rotate(by: Angle(degrees: heading))
+                context.translateBy(x: -center.x, y: -center.y)
+                
+                // Scale factor for icon size
+                let scale: CGFloat = 1.2
+                let cx = center.x
+                let cy = center.y
+                
+                // Draw airplane silhouette (pointing up/north)
+                var path = Path()
+                path.move(to: CGPoint(x: cx, y: cy - 10 * scale))              // nose
+                path.addLine(to: CGPoint(x: cx + 7 * scale, y: cy + 2 * scale))  // right wing tip
+                path.addLine(to: CGPoint(x: cx + 1.5 * scale, y: cy + 0.5 * scale)) // right wing root
+                path.addLine(to: CGPoint(x: cx + 2.5 * scale, y: cy + 9 * scale))  // right tail
+                path.addLine(to: CGPoint(x: cx, y: cy + 7.5 * scale))          // tail center
+                path.addLine(to: CGPoint(x: cx - 2.5 * scale, y: cy + 9 * scale))  // left tail
+                path.addLine(to: CGPoint(x: cx - 1.5 * scale, y: cy + 0.5 * scale)) // left wing root
+                path.addLine(to: CGPoint(x: cx - 7 * scale, y: cy + 2 * scale))  // left wing tip
+                path.closeSubpath()
+                
+                // Fill and stroke
+                context.fill(path, with: .color(isOnGround ? .secondary : .blue))
+                context.stroke(path, with: .color(.white.opacity(0.8)), lineWidth: 0.5)
+            }
+        }
+    }
+}
+
 // MARK: - Row
 
 struct AircraftRow: View {
@@ -113,16 +157,12 @@ struct AircraftRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            // Icon
-            ZStack {
-                Circle()
-                    .fill(aircraft.isOnGround ? Color.secondary.opacity(0.15) : Color.blue.opacity(0.12))
-                    .frame(width: 42, height: 42)
-                Image(systemName: aircraft.isOnGround ? "airplane.arrival" : "airplane")
-                    .font(.system(size: 18))
-                    .foregroundStyle(aircraft.isOnGround ? .secondary : Color.blue)
-                    .rotationEffect(.degrees(aircraft.track ?? 0))
-            }
+            // Airplane Icon
+            PlaneIconView(
+                isOnGround: aircraft.isOnGround,
+                heading: aircraft.track ?? 0
+            )
+            .frame(width: 42, height: 42)
 
             VStack(alignment: .leading, spacing: 3) {
                 HStack {

@@ -176,18 +176,53 @@ final class AircraftAnnotationView: MKAnnotationView {
             color.setFill()
             UIColor.white.withAlphaComponent(0.9).setStroke()
 
-            // Aircraft silhouette pointing "up" (north before rotation)
+            // More realistic aircraft silhouette pointing "up" (north before rotation)
             let path = UIBezierPath()
-            path.move(to:      CGPoint(x:  0,  y: -13))   // nose
-            path.addLine(to:   CGPoint(x:  9,  y:  3))    // right wing tip
-            path.addLine(to:   CGPoint(x:  2,  y:  1))    // right wing root
-            path.addLine(to:   CGPoint(x:  3,  y: 12))    // right tail
-            path.addLine(to:   CGPoint(x:  0,  y: 10))    // tail centre
-            path.addLine(to:   CGPoint(x: -3,  y: 12))    // left tail
-            path.addLine(to:   CGPoint(x: -2,  y:  1))    // left wing root
-            path.addLine(to:   CGPoint(x: -9,  y:  3))    // left wing tip
+            
+            // Nose
+            path.move(to: CGPoint(x: 0, y: -12))
+            
+            // Right side of fuselage to wing
+            path.addLine(to: CGPoint(x: 1.5, y: -8))
+            path.addLine(to: CGPoint(x: 1.5, y: -2))
+            
+            // Right wing
+            path.addLine(to: CGPoint(x: 10, y: 0))
+            path.addLine(to: CGPoint(x: 10, y: 2))
+            path.addLine(to: CGPoint(x: 2, y: 1))
+            
+            // Right side fuselage to tail
+            path.addLine(to: CGPoint(x: 2, y: 8))
+            
+            // Right horizontal stabilizer
+            path.addLine(to: CGPoint(x: 4.5, y: 9))
+            path.addLine(to: CGPoint(x: 4.5, y: 10))
+            path.addLine(to: CGPoint(x: 1.5, y: 9.5))
+            
+            // Vertical stabilizer (tail fin)
+            path.addLine(to: CGPoint(x: 1, y: 12))
+            path.addLine(to: CGPoint(x: 0, y: 13))
+            path.addLine(to: CGPoint(x: -1, y: 12))
+            path.addLine(to: CGPoint(x: -1.5, y: 9.5))
+            
+            // Left horizontal stabilizer
+            path.addLine(to: CGPoint(x: -4.5, y: 10))
+            path.addLine(to: CGPoint(x: -4.5, y: 9))
+            path.addLine(to: CGPoint(x: -2, y: 8))
+            
+            // Left side fuselage
+            path.addLine(to: CGPoint(x: -2, y: 1))
+            
+            // Left wing
+            path.addLine(to: CGPoint(x: -10, y: 2))
+            path.addLine(to: CGPoint(x: -10, y: 0))
+            path.addLine(to: CGPoint(x: -1.5, y: -2))
+            
+            // Left side of fuselage
+            path.addLine(to: CGPoint(x: -1.5, y: -8))
+            
             path.close()
-            path.lineWidth = 0.5
+            path.lineWidth = 1.0
             path.fill()
             path.stroke()
         }
