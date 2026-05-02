@@ -46,7 +46,7 @@ struct FlightDetailView: View {
                     .frame(width: 70, height: 70)
                 Image(systemName: aircraft.isOnGround ? "airplane.arrival" : "airplane")
                     .font(.system(size: 32))
-                    .foregroundStyle(aircraft.isOnGround ? .secondary : .blue)
+                    .foregroundStyle(aircraft.isOnGround ? .secondary : Color.blue)
             }
             Text(aircraft.callsign)
                 .font(.title2.bold())

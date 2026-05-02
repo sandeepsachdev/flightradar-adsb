@@ -80,11 +80,29 @@ struct FlightListView: View {
     }
 
     private var emptyState: some View {
-        ContentUnavailableView(
-            "No Aircraft Found",
-            systemImage: "airplane.circle",
-            description: Text("Pull to refresh or check your internet connection.")
-        )
+        Group {
+            if #available(iOS 17.0, *) {
+                ContentUnavailableView(
+                    "No Aircraft Found",
+                    systemImage: "airplane.circle",
+                    description: Text("Pull to refresh or check your internet connection.")
+                )
+            } else {
+                VStack(spacing: 16) {
+                    Image(systemName: "airplane.circle")
+                        .font(.system(size: 60))
+                        .foregroundStyle(.secondary)
+                    Text("No Aircraft Found")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                    Text("Pull to refresh or check your internet connection.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding()
+            }
+        }
     }
 }
 
@@ -102,7 +120,7 @@ struct AircraftRow: View {
                     .frame(width: 42, height: 42)
                 Image(systemName: aircraft.isOnGround ? "airplane.arrival" : "airplane")
                     .font(.system(size: 18))
-                    .foregroundStyle(aircraft.isOnGround ? .secondary : .blue)
+                    .foregroundStyle(aircraft.isOnGround ? .secondary : Color.blue)
                     .rotationEffect(.degrees(aircraft.track ?? 0))
             }
 
